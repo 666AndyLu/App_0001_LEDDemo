@@ -1,5 +1,6 @@
 package com.example.andylu.app_0001_leddemo;
 
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,7 +9,13 @@ import android.widget.Button;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
-import com.example.andylu.hardlibrary.*;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Objects;
+//import android.os.ILedService;
+//import android.os.ServiceManager;
+import android.os.IBinder;
 
 public class MainActivity extends AppCompatActivity {
     private  boolean ledon = false;
@@ -17,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox checkboxled2 = null;
     private CheckBox checkboxled3 = null;
     private CheckBox checkboxled4 = null;
+    //private ILedService iLedService = null;
+    Object proxy = null;
+    Method ledCtrl = null;
 
     class MyButtonListener implements View.OnClickListener{
         @Override
@@ -29,9 +39,15 @@ public class MainActivity extends AppCompatActivity {
                 checkboxled3.setChecked(true);
                 checkboxled4.setChecked(true);
 
-                for(int i=0;i<4;i++)
-                {
-                    HardControl.ledCtrl(i,1);
+                try {
+                    for(int i=0;i<4;i++)
+                    {
+                        ledCtrl.invoke(proxy, i, 1);
+                    }
+                } catch (IllegalAccessException e) {
+
+                } catch (InvocationTargetException e) {
+
                 }
             }
             else {
@@ -41,10 +57,17 @@ public class MainActivity extends AppCompatActivity {
                 checkboxled3.setChecked(false);
                 checkboxled4.setChecked(false);
 
-                for(int i=0;i<4;i++)
-                {
-                    HardControl.ledCtrl(i,0);
+                try {
+                    for(int i=0;i<4;i++)
+                    {
+                        ledCtrl.invoke(proxy, i, 0);
+                    }
+                } catch (IllegalAccessException e) {
+
+                } catch (InvocationTargetException e) {
+
                 }
+
             }
         }
     }
@@ -54,56 +77,62 @@ public class MainActivity extends AppCompatActivity {
         boolean checked = ((CheckBox) view).isChecked();
 
         // Check which checkbox was clicked
-        switch(view.getId()) {
-            case R.id.LED1:
-                if (checked) {
-                    // Put some meat on the sandwich
-                    Toast.makeText(getApplicationContext(), "LED1 on",Toast.LENGTH_SHORT).show();
-                    HardControl.ledCtrl(0, 1);
-                }
-                else{
-                    // Remove the meat
-                    Toast.makeText(getApplicationContext(), "LED1 off",Toast.LENGTH_SHORT).show();
-                    HardControl.ledCtrl(0, 0);
-                }
-                break;
-            case R.id.LED2:
-                if (checked) {
-                    // Put some meat on the sandwich
-                    Toast.makeText(getApplicationContext(), "LED2 on",Toast.LENGTH_SHORT).show();
-                    HardControl.ledCtrl(1, 1);
-                }
-                else{
-                    // Remove the meat
-                    Toast.makeText(getApplicationContext(), "LED2 off",Toast.LENGTH_SHORT).show();
-                    HardControl.ledCtrl(1, 0);
-                }
-                break;
-            case R.id.LED3:
-                if (checked) {
-                    // Put some meat on the sandwich
-                    Toast.makeText(getApplicationContext(), "LED3 on",Toast.LENGTH_SHORT).show();
-                    HardControl.ledCtrl(2, 1);
-                }
-                else{
-                    // Remove the meat
-                    Toast.makeText(getApplicationContext(), "LED3 off",Toast.LENGTH_SHORT).show();
-                    HardControl.ledCtrl(2, 0);
-                }
-                break;
-            case R.id.LED4:
-                if (checked) {
-                    // Put some meat on the sandwich
-                    Toast.makeText(getApplicationContext(), "LED4 on",Toast.LENGTH_SHORT).show();
-                    HardControl.ledCtrl(3, 1);
-                }
-                else{
-                    // Remove the meat
-                    Toast.makeText(getApplicationContext(), "LED4 off",Toast.LENGTH_SHORT).show();
-                    HardControl.ledCtrl(3, 0);
-                }
-                break;
-            // TODO: Veggie sandwich
+        try {
+            switch(view.getId()) {
+                case R.id.LED1:
+                    if (checked) {
+                        // Put some meat on the sandwich
+                        Toast.makeText(getApplicationContext(), "LED1 on",Toast.LENGTH_SHORT).show();
+                        ledCtrl.invoke(proxy, 0, 1);
+                    }
+                    else{
+                        // Remove the meat
+                        Toast.makeText(getApplicationContext(), "LED1 off",Toast.LENGTH_SHORT).show();
+                        ledCtrl.invoke(proxy, 0, 0);
+                    }
+                    break;
+                case R.id.LED2:
+                    if (checked) {
+                        // Put some meat on the sandwich
+                        Toast.makeText(getApplicationContext(), "LED2 on",Toast.LENGTH_SHORT).show();
+                        ledCtrl.invoke(proxy, 1, 1);
+                    }
+                    else{
+                        // Remove the meat
+                        Toast.makeText(getApplicationContext(), "LED2 off",Toast.LENGTH_SHORT).show();
+                        ledCtrl.invoke(proxy, 1, 0);
+                    }
+                    break;
+                case R.id.LED3:
+                    if (checked) {
+                        // Put some meat on the sandwich
+                        Toast.makeText(getApplicationContext(), "LED3 on",Toast.LENGTH_SHORT).show();
+                        ledCtrl.invoke(proxy, 2, 1);
+                    }
+                    else{
+                        // Remove the meat
+                        Toast.makeText(getApplicationContext(), "LED3 off",Toast.LENGTH_SHORT).show();
+                        ledCtrl.invoke(proxy, 2, 0);
+                    }
+                    break;
+                case R.id.LED4:
+                    if (checked) {
+                        // Put some meat on the sandwich
+                        Toast.makeText(getApplicationContext(), "LED4 on",Toast.LENGTH_SHORT).show();
+                        ledCtrl.invoke(proxy, 3, 1);
+                    }
+                    else{
+                        // Remove the meat
+                        Toast.makeText(getApplicationContext(), "LED4 off",Toast.LENGTH_SHORT).show();
+                        ledCtrl.invoke(proxy, 3, 0);
+                    }
+                    break;
+                // TODO: Veggie sandwich
+            }
+        } catch (IllegalAccessException e) {
+
+        } catch (InvocationTargetException e) {
+
         }
     }
 
@@ -113,7 +142,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        HardControl.ledOpen();
+        //iLedService = ILedService.Stub.asInterface(ServiceManager.getService("led"));
+        try {
+            Method getService = Class.forName("android.os.ServiceManager").getMethod("getService", String.class);
+            IBinder ledService = (IBinder)getService.invoke(null, "led");
+            Method asInterface = Class.forName("android.os.ILedService$Stub").getMethod("asInterface", IBinder.class);
+            proxy = asInterface.invoke(null, ledService);
+            ledCtrl = Class.forName("android.os.ILedService$Stub$Proxy").getMethod("ledCtrl", int.class, int.class);
+        } catch (NoSuchMethodException e) {
+
+        } catch (ClassNotFoundException e) {
+
+        } catch (IllegalAccessException e) {
+
+        } catch (InvocationTargetException e) {
+
+        }
+
 
         button = (Button) findViewById(R.id.BUTTON);
         checkboxled1 = (CheckBox) findViewById(R.id.LED1);        checkboxled1 = (CheckBox) findViewById(R.id.LED1);
